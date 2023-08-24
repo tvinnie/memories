@@ -6,9 +6,12 @@ import NavBar from './components/Navbar/NavBar';
 import Home from './components/Home/Home';
 import Auth from './components/Auth/Auth';
 
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
 function App() {
 
   return (
+    <GoogleOAuthProvider clientId='GOOGLE_CLIENT_ID '>
     <BrowserRouter>
       <Container maxWidth='lg' >
         <NavBar />
@@ -18,6 +21,7 @@ function App() {
         </Routes>
       </Container>
     </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 

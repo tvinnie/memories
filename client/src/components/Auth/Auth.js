@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@material-ui/core';
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+
 import useStyles from './styles';
 import Input from './input';
 import Icon from './Icon';
@@ -10,6 +13,8 @@ import Icon from './Icon';
 
 const Auth = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
   const [showPassword, setShowPassWord] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const handleShowPassword = () => setShowPassWord((prevShowPassword) => !prevShowPassword);
@@ -18,6 +23,15 @@ const Auth = () => {
 
   const googleSuccess = async (res) => {
     console.log(res);
+    const result = res?.profileObj; //cannot through an error of undefined.
+    const token = res?.access_token;
+
+    try {
+      dispatch({ type: 'AUTH', data: { result, token } });
+
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const googleFailure = (error) => {
@@ -30,11 +44,20 @@ const Auth = () => {
     handleShowPassword(false);
   }
 
-  // custom google sign in function
+
   const googleLogin = useGoogleLogin({
-    onSuccess: googleSuccess => console.log(googleSuccess),
-    // flow:'auth-code'
-  })
+    onSuccess: async (tokenResponse) => {
+      console.log(tokenResponse);
+      const userInfo = await axios.get(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
+      );
+
+      console.log(userInfo);
+    },
+    onError: errorResponse => console.log(errorResponse),
+  });
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -62,10 +85,10 @@ const Auth = () => {
             {isSignUp ? 'Sign Up' : 'Sign In'}
           </Button>
 
-            {/*  custom google sign in button */}
+          {/*  custom google sign in button */}
           <Button className={classes.googleButton} color='primary' fullWidth onClick={() => googleLogin()} startIcon={<Icon />} variant='contained'>
-                Google Sign In
-              </Button>
+            Google Sign In
+          </Button>
 
           <Grid container justifyContent='flex-end'>
             <Grid item>

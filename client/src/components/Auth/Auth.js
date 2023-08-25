@@ -4,6 +4,7 @@ import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import useStyles from './styles';
 import Input from './input';
@@ -14,6 +15,7 @@ import Icon from './Icon';
 const Auth = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassWord] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
@@ -21,40 +23,28 @@ const Auth = () => {
   const handleSubmit = () => { };
   const handleChange = () => { };
 
-  const googleSuccess = async (res) => {
-    console.log(res);
-    const result = res?.profileObj; //cannot through an error of undefined.
-    const token = res?.access_token;
-
-    try {
-      dispatch({ type: 'AUTH', data: { result, token } });
-
-    } catch (error) {
-      console.log(error)
-    }
-  };
-
-  const googleFailure = (error) => {
-    console.log(error);
-    console.log('Google Sign In was unsuccessful. Try Again Later');
-  };
-
   const switchMode = () => {
     setIsSignUp((prevIsSignUp) => !prevIsSignUp);
     handleShowPassword(false);
   }
 
-
+//google sign in function.
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log(tokenResponse);
+      const token = tokenResponse?.access_token;
       const userInfo = await axios.get(
         'https://www.googleapis.com/oauth2/v3/userinfo',
         { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
       );
-
-      console.log(userInfo);
+        const userData = userInfo.data
+      try {
+        dispatch({type:'AUTH', data: {userData, token}})
+        navigate('/')
+      } catch (error) {
+        console.log(error)
+      }
     },
+
     onError: errorResponse => console.log(errorResponse),
   });
 

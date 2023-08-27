@@ -9,7 +9,11 @@ import { useNavigate } from 'react-router-dom';
 import useStyles from './styles';
 import Input from './input';
 import Icon from './Icon';
+import { signin,signup } from '../../actions/auth';
 
+const initialState = {
+  firstName:'', lastName:'', email:'', password:'',confirmPassword:''
+}
 
 
 const Auth = () => {
@@ -18,10 +22,29 @@ const Auth = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassWord] = useState(false);
+
   const [isSignUp, setIsSignUp] = useState(false);
+
+  const [formData, setFormData] = useState(initialState);
+
   const handleShowPassword = () => setShowPassWord((prevShowPassword) => !prevShowPassword);
-  const handleSubmit = () => { };
-  const handleChange = () => { };
+
+  const handleSubmit = (e) => { 
+    e.preventDefault();
+    
+    if(isSignUp){
+      dispatch(signup(formData, navigate))
+      
+    }else{
+      dispatch(signin(formData, navigate))
+    }
+  };
+
+
+  // handling form data
+  const handleChange = (e) => { 
+    setFormData({ ...formData, [e.target.name]:e.target.value })
+  };
 
   const switchMode = () => {
     setIsSignUp((prevIsSignUp) => !prevIsSignUp);
@@ -62,8 +85,8 @@ const Auth = () => {
             {
               isSignUp && (
                 <>
-                  <Input name='FirstName' label='First Name' handleChange={handleChange} half />
-                  <Input name='LastName' label='Last Name' handleChange={handleChange} half />
+                  <Input name='firstName' label='First Name' handleChange={handleChange} half />
+                  <Input name='lastName' label='Last Name' handleChange={handleChange} half />
                 </>
               )
             }

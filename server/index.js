@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 
 // import postroutes
 import postRoutes from './routes/posts.js';
+import userRoutes from './routes/users.js';
 
 //connect to express server
 const app = express();
@@ -18,6 +19,7 @@ app.use(cors());
 
 //initialize routes
 app.use('/posts', postRoutes);
+app.use('/user',userRoutes);
 
 // connect to mongo atlas cloud db 
 // const CONNECTION_URL = 'mongodb+srv://tri:0ibm.Linux@vincecluster1.zrlrdqv.mongodb.net/?retryWrites=true&w=majority';

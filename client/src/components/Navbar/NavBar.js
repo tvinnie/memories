@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react'
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core'
 import memories from '../../images/memories.png';
-import {Link} from 'react-router-dom';
-
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import useStyles from './styles';
+import { useDispatch } from 'react-redux';
 // import Auth from '../Auth/Auth';
 
 const NavBar = () => {
     const classes = useStyles()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [user, setUser] = useState( JSON.parse(localStorage.getItem('profile')));
 
-    console.log(user);
+    // console.log(user);
+    // logout a user
+    const logOut = () => {
+        dispatch({type: 'LOGOUT'});
+
+        navigate('/');
+
+        setUser(null);
+    }
 
     useEffect(() => {
         //check google sign up if it exists
         const token = user?.access_token;
 
         setUser(JSON.parse(localStorage.getItem('profile')));
-    },[]);
+    },[location]);
 
 
 
@@ -33,7 +44,7 @@ const NavBar = () => {
                         <div className={classes.profile}>
                         <Avatar className={classes.purple} alt={user.userData.name} src={user.userData.picture}>{user.userData.name.charAt(0)}</Avatar>
                         <Typography className={classes.userName} variant="h6">{user.userData.name}</Typography>
-                        <Button variant='contained' className={classes.logout} color='secondary'>Logout</Button>
+                        <Button variant='contained' className={classes.logout} color='secondary' onClick={logOut}>Logout</Button>
                         </div>
                     ) : (
                         <Button component={Link} to='/auth' variant='contained' color='primary'>Sign In</Button>

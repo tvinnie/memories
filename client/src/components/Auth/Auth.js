@@ -39,6 +39,7 @@ const Auth = () => {
         const userData = userInfo.data
       try {
         dispatch({type:'AUTH', data: {userData, token}})
+        // console.log(userData);
         navigate('/')
       } catch (error) {
         console.log(error)

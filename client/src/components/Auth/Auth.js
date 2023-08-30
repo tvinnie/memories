@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Avatar, Button, Paper, Grid, Typography, Container, TextField } from '@material-ui/core';
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -48,7 +48,7 @@ const Auth = () => {
 
   const switchMode = () => {
     setIsSignUp((prevIsSignUp) => !prevIsSignUp);
-    handleShowPassword(false);
+    setShowPassWord(false);
   }
 
 //google sign in function.
@@ -59,16 +59,17 @@ const Auth = () => {
         'https://www.googleapis.com/oauth2/v3/userinfo',
         { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
       );
-        const userData = userInfo.data
+        const result = userInfo.data
+        // console.log(result.sub)
       try {
-        dispatch({type:'AUTH', data: {userData, token}})
-        // console.log(userData);
+        dispatch({type:'AUTH', data: {result, token}})
+        // console.log(result);
         navigate('/')
       } catch (error) {
         console.log(error)
       }
     },
-
+    
     onError: errorResponse => console.log(errorResponse),
   });
 

@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 
-const auth = (req, res) => {
+const auth = (req, res,next ) => {
     try {
         // check if token is valid
-        const token = req.headers.authorization.split(" ")[1]
+        const token = req.headers.authorization.split(" ")[1];
         const isCustomAuth = token.length < 500;
 
         let decodeData;
@@ -19,6 +19,7 @@ const auth = (req, res) => {
         }
 
         next();
+        
     } catch (error) {
         console.log(error)
     }

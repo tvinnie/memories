@@ -15,17 +15,19 @@ const initialState = {
   firstName:'', lastName:'', email:'', password:'',confirmPassword:''
 }
 
-
 const Auth = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [showPassword, setShowPassWord] = useState(false);
-
   const [isSignUp, setIsSignUp] = useState(false);
-
   const [formData, setFormData] = useState(initialState);
+
+  const switchMode = () => {
+    setFormData(initialState);
+    setIsSignUp((prevIsSignUp) => !prevIsSignUp);
+    setShowPassWord(false);
+  }
 
   const handleShowPassword = () => setShowPassWord((prevShowPassword) => !prevShowPassword);
 
@@ -46,10 +48,7 @@ const Auth = () => {
     setFormData({ ...formData, [e.target.name]:e.target.value })
   };
 
-  const switchMode = () => {
-    setIsSignUp((prevIsSignUp) => !prevIsSignUp);
-    setShowPassWord(false);
-  }
+
 
 //google sign in function.
   const googleLogin = useGoogleLogin({
@@ -60,7 +59,7 @@ const Auth = () => {
         { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
       );
         const result = userInfo.data
-        // console.log(result.sub)
+        // console.log(userInfo)
       try {
         dispatch({type:'AUTH', data: {result, token}})
         // console.log(result);

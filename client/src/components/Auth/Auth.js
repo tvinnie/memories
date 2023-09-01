@@ -56,19 +56,15 @@ const Auth = () => {
       const token = tokenResponse?.access_token;
       const userInfo = await axios.get(
         'https://www.googleapis.com/oauth2/v3/userinfo',
-        { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } },
-      );
-        const result = userInfo.data
-        // console.log(userInfo)
+        { headers: { Authorization: `Bearer ${tokenResponse.access_token}`}})
+      const result = userInfo.data
       try {
         dispatch({type:'AUTH', data: {result, token}})
-        // console.log(result);
         navigate('/')
       } catch (error) {
         console.log(error)
       }
     },
-    
     onError: errorResponse => console.log(errorResponse),
   });
 
